@@ -1,0 +1,12 @@
+{
+    "name": "@hotel/domain",
+    "version": "1.0.0",
+    "main": "src/index.ts",
+    "scripts": {
+        "test": "vitest"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0",
+        "vitest": "^1.0.0"
+    }
+}
