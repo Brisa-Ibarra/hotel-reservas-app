@@ -33,8 +33,8 @@ router.post('/', async (req: Request, res: Response)=> {
 
 router.put('/:id/cancel', async(req: Request, res: Response)=> {
     try {
-        const {userRole} = req.body;
-        await confirmReservation.execute({reservationId: req.params.id, userRole});
+        const {userId} = req.body;
+        await cancelReservation.execute({reservationId: req.params.id, userId});
         res.status(201).json({message: 'Reserva cancelada correctamente'})
     } catch (error: any) {
         res.status(400).json({error: error.message})
@@ -53,21 +53,21 @@ router.put('/:id/confirm', async(req: Request, res: Response)=> {
 
 router.get('/my/:userId', async(req: Request, res: Response)=> {
     try {
-        const reservation = await getMyReservations.execute({userId: req.params.id});
-        res.status(201).json(reservation);
+        const reservations = await getMyReservations.execute({userId: req.params.userId});
+        res.status(200).json(reservations);
     } catch (error: any) {
-        res.status(400).json({error: error.message})
+        res.status(400).json({ error: error.message });
     }
-})
+});
 
-router.get('/', async(req: Request, res: Response)=> {
+router.get('/', async (req: Request, res: Response) => {
     try {
-        const {userRole} = req.query;
-        const reservations = await getAllReservations.execute({userRole: userRole as string});
-        res.status(201).json(reservations)
+        const { userRole } = req.query;
+        const reservations = await getAllReservations.execute({ userRole: userRole as string });
+        res.status(200).json(reservations);
     } catch (error: any) {
-        res.status(400).json({error: error.message})
+        res.status(400).json({ error: error.message });
     }
-})
+});
 
 export default router;
