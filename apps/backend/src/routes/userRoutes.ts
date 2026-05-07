@@ -22,7 +22,11 @@ router.post('/login', async(req: Request, res: Response)=> {
     try {
         const { email, password } = req.body;
         const result = await loginUser.execute({email, password});
-        res.status(201).json({ token: result.token, role: result.user.role });
+        res.status(201).json({ 
+            token: result.token, 
+            role: result.user.role,
+            userId: result.user.id
+        });
     } catch (error: any){
         res.status(400).json({error: error.message})
     }

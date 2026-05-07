@@ -3,11 +3,13 @@ import './database';
 import userRoutes from './routes/userRoutes'
 import roomRoutes from './routes/roomRoutes'
 import reservationRoutes from './routes/reservationRoutes'
+import cors from 'cors';
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.use(cors());
 
 app.use('/users', userRoutes);
 app.use('/rooms', roomRoutes);
