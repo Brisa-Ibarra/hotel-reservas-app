@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Hotel, Mail, Lock, User } from 'lucide-react';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { api } from '../services/api';
@@ -36,17 +37,26 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md flex flex-col gap-4">
-                <h1 className="text-2xl font-bold text-center text-blue-600">Hotel Reservas</h1>
-                <h2 className="text-lg font-semibold text-center">{isRegister ? 'Registrarse' : 'Iniciar sesión'}</h2>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center">
+            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md flex flex-col gap-5">
+                <div className="text-center">
+                    <div className="flex justify-center mb-2">
+                        <Hotel size={48} className="text-blue-600" />
+                    </div>
+                    <h1 className="text-2xl font-bold text-gray-800">Hotel Reservas</h1>
+                    <p className="text-gray-500 text-sm mt-1">{isRegister ? 'Creá tu cuenta' : 'Bienvenido de vuelta'}</p>
+                </div>
                 {isRegister && (
                     <Input label="Nombre" value={nombre} onChange={setNombre} placeholder="Tu nombre" />
                 )}
                 <Input label="Email" type="email" value={email} onChange={setEmail} placeholder="tu@email.com" />
                 <Input label="Contraseña" type="password" value={password} onChange={setPassword} placeholder="••••••••" />
-                {error && <p className="text-red-500 text-sm">{error}</p>}
-                <Button label={isRegister ? 'Registrarse' : 'Iniciar sesión'} onClick={handleSubmit} />
+                {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">
+                        {error}
+                    </div>
+                )}
+                <Button label={isRegister ? 'Crear cuenta' : 'Iniciar sesión'} onClick={handleSubmit} />
                 <button
                     onClick={() => setIsRegister(!isRegister)}
                     className="text-sm text-blue-600 hover:underline text-center"

@@ -1,3 +1,5 @@
+import { Calendar, Hotel, Clock, CheckCircle, XCircle, Flag } from 'lucide-react';
+
 interface ReservationCardProps {
     id: string;
     roomId: string;
@@ -22,27 +24,36 @@ const statusStyles = {
     completed: 'bg-gray-100 text-gray-700',
 };
 
+const statusIcons = {
+    pending: <Clock size={12} />,
+    confirmed: <CheckCircle size={12} />,
+    cancelled: <XCircle size={12} />,
+    completed: <Flag size={12} />,
+};
+
 export function ReservationCard({ id, roomId, startDate, endDate, status, totalPrice, onCancel }: ReservationCardProps) {
     return (
-        <div className="border rounded-lg p-4 shadow-sm bg-white flex flex-col gap-2">
+        <div className="border border-gray-200 rounded-xl p-5 bg-white shadow-sm flex flex-col gap-3">
             <div className="flex justify-between items-center">
-                <h3 className="text-lg font-bold">Reserva #{id.slice(0, 8)}</h3>
-                <span className={`text-sm px-2 py-1 rounded-full ${statusStyles[status]}`}>
-                    {statusLabels[status]}
+                <h3 className="text-base font-bold text-gray-800">Reserva #{id.slice(0, 8)}</h3>
+                <span className={`text-xs px-3 py-1 rounded-full font-medium flex items-center gap-1 ${statusStyles[status]}`}>
+                    {statusIcons[status]} {statusLabels[status]}
                 </span>
             </div>
-            <p className="text-sm text-gray-600">Habitación: {roomId}</p>
-            <p className="text-sm text-gray-600">Check-in: {startDate}</p>
-            <p className="text-sm text-gray-600">Check-out: {endDate}</p>
-            <p className="text-lg font-semibold text-blue-600">Total: ${totalPrice}</p>
-            {status === 'pending' || status === 'confirmed' ? (
+            <div className="flex flex-col gap-1 text-sm text-gray-600">
+                <p className="flex items-center gap-2"><Hotel size={14} /> Habitación: {roomId.slice(0, 8)}...</p>
+                <p className="flex items-center gap-2"><Calendar size={14} /> Check-in: {startDate}</p>
+                <p className="flex items-center gap-2"><Calendar size={14} /> Check-out: {endDate}</p>
+            </div>
+            <p className="text-xl font-bold text-blue-600">Total: ${totalPrice}</p>
+            {(status === 'pending' || status === 'confirmed') && (
                 <button
                     onClick={onCancel}
-                    className="mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-medium transition-colors"
+                    className="mt-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-4 py-2.5 rounded-lg font-medium transition-colors w-full"
                 >
                     Cancelar reserva
                 </button>
-            ) : null}
+            )}
         </div>
     );
 }
