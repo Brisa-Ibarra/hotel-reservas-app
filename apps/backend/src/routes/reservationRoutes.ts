@@ -16,45 +16,51 @@ const confirmReservation = new ConfirmReservation(reservationRepo);
 const getMyReservations = new GetMyReservations(reservationRepo);
 const getAllReservations = new GetAllReservations(reservationRepo);
 
-router.post('/', async (req: Request, res: Response)=> {
+router.post('/', async (req: Request, res: Response) => {
     try {
-        const {userId, roomId, startDate, endDate} = req.body;
+        const { userId, roomId, startDate, endDate } = req.body;
         const reservation = await createReservation.execute({
             userId,
             roomId,
             startDate: new Date(startDate),
             endDate: new Date(endDate)
         });
-        res.status(201).json(reservation)
+        res.status(201).json(reservation);
     } catch (error: any) {
-        res.status(400).json({error: error.message})
+        res.status(400).json({ error: error.message });
     }
 });
 
-router.put('/:id/cancel', async(req: Request, res: Response)=> {
+router.put('/:id/cancel', async (req: Request, res: Response) => {
     try {
-        const {userId} = req.body;
-        await cancelReservation.execute({reservationId: req.params.id, userId});
-        res.status(201).json({message: 'Reserva cancelada correctamente'})
+        const { userId } = req.body;
+        await cancelReservation.execute({ reservationId: req.params.id, userId });
+        res.status(200).json({ message: 'Reserva cancelada correctamente' });
     } catch (error: any) {
-        res.status(400).json({error: error.message})
+        res.status(400).json({ error: error.message });
     }
-})
+});
 
-router.put('/:id/confirm', async(req: Request, res: Response)=> {
+router.put('/:id/confirm', async (req: Request, res: Response) => {
     try {
-        const {userRole} = req.body;
-        await confirmReservation.execute({reservationId: req.params.id, userRole});
-        res.status(201).json({message: 'Reserva confirmada correctamente'})
-    } catch(error: any){
-        res.status(400).json({error: error.message})
+        const { userRole } = req.body;
+        await confirmReservation.execute({ reservationId: req.params.id, userRole });
+        res.status(200).json({ message: 'Reserva confirmada correctamente' });
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
     }
-})
+});
 
-router.get('/my/:userId', async(req: Request, res: Response)=> {
+router.get('/my/:userId', async (req: Request, res: Response) => {
     try {
-        const reservations = await getMyReservations.execute({userId: req.params.userId});
-        res.status(200).json(reservations);
+        const reservations = await getMyReservations.execute({ userId: req.params.userId });
+        const reservationsWithRoom = await Promise.all(
+            reservations.map(async (r) => {
+                const room = await roomRepo.findById(r.roomId);
+                return { ...r, roomNumber: room?.number ?? r.roomId };
+            })
+        );
+        res.status(200).json(reservationsWithRoom);
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }
@@ -64,7 +70,13 @@ router.get('/', async (req: Request, res: Response) => {
     try {
         const { userRole } = req.query;
         const reservations = await getAllReservations.execute({ userRole: userRole as string });
-        res.status(200).json(reservations);
+        const reservationsWithRoom = await Promise.all(
+            reservations.map(async (r) => {
+                const room = await roomRepo.findById(r.roomId);
+                return { ...r, roomNumber: room?.number ?? r.roomId };
+            })
+        );
+        res.status(200).json(reservationsWithRoom);
     } catch (error: any) {
         res.status(400).json({ error: error.message });
     }

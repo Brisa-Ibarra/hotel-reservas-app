@@ -58,11 +58,11 @@ export default function RoomsPage() {
 
     return (
         <ProtectedRoute>
-            <div className="min-h-screen bg-gray-100">
+            <div className="min-h-screen bg-[#F5F0E8]">
                 <Navbar userRole={userRole} onLogout={handleLogout} />
                 <div className="max-w-5xl mx-auto p-6 flex flex-col gap-6">
-                    <h2 className="text-2xl font-bold">Habitaciones disponibles</h2>
-                    <div className="bg-white p-4 rounded-lg shadow-sm flex gap-4 items-end">
+                    <h2 className="text-3xl font-bold text-[#2D4A2D]">Habitaciones disponibles</h2>
+                    <div className="bg-white p-4 rounded-xl shadow-sm flex gap-4 items-end border border-[#C4A35A]/30">
                         <Input label="Check-in" type="date" value={startDate} onChange={setStartDate} />
                         <Input label="Check-out" type="date" value={endDate} onChange={setEndDate} />
                         <Button label="Buscar" onClick={handleSearch} />
@@ -83,7 +83,7 @@ export default function RoomsPage() {
                     </div>
                     <button
                         onClick={() => router.push('/reservations')}
-                        className="text-blue-600 hover:underline text-sm"
+                        className="text-[#8B6914] hover:underline text-sm"
                     >
                         Ver mis reservas
                     </button>

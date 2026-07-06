@@ -55,11 +55,11 @@ export default function AdminPage() {
                         {reservations.length === 0 && (
                             <p className="text-gray-500">No hay reservas</p>
                         )}
-                        {reservations.map(reservation => (
+                        {reservations.map((reservation, index) => (
                             <div key={reservation.id} className="flex flex-col gap-2">
                                 <ReservationCard
-                                    id={reservation.id}
-                                    roomId={reservation.roomId}
+                                    id={String(index + 1).padStart(4, '0')}
+                                    roomNumber={reservation.roomNumber}
                                     startDate={reservation.startDate.slice(0, 10)}
                                     endDate={reservation.endDate.slice(0, 10)}
                                     status={reservation.status}
@@ -69,7 +69,7 @@ export default function AdminPage() {
                                 {reservation.status === 'pending' && (
                                     <button
                                         onClick={() => handleConfirm(reservation.id)}
-                                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors w-full"
+                                        className="bg-[#2D4A2D] hover:bg-[#3D5A3D] text-white px-4 py-2 rounded-lg font-medium transition-colors w-full"
                                     >
                                         Confirmar reserva
                                     </button>

@@ -5,11 +5,13 @@ import { useRouter } from 'next/navigation';
 import { ReservationCard } from '../../components/ReservationCard';
 import { Navbar } from '../../components/Navbar';
 import { api } from '../../services/api';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 interface Reservation {
     id: string;
     userId: string;
     roomId: string;
+    roomNumber: string;
     startDate: string;
     endDate: string;
     status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
@@ -51,36 +53,38 @@ export default function ReservationsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <Navbar userRole={userRole} onLogout={handleLogout} />
-            <div className="max-w-5xl mx-auto p-6 flex flex-col gap-6">
-                <h2 className="text-2xl font-bold">
-                    {userRole === 'admin' ? 'Todas las reservas' : 'Mis reservas'}
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {reservations.length === 0 && (
-                        <p className="text-gray-500">No hay reservas</p>
-                    )}
-                    {reservations.map(reservation => (
-                        <ReservationCard
-                            key={reservation.id}
-                            id={reservation.id}
-                            roomId={reservation.roomId}
-                            startDate={reservation.startDate.slice(0, 10)}
-                            endDate={reservation.endDate.slice(0, 10)}
-                            status={reservation.status}
-                            totalPrice={reservation.totalPrice}
-                            onCancel={() => handleCancel(reservation.id)}
-                        />
-                    ))}
+        <ProtectedRoute>
+            <div className="min-h-screen bg-[#F5F0E8]">
+                <Navbar userRole={userRole} onLogout={handleLogout} />
+                <div className="max-w-5xl mx-auto p-6 flex flex-col gap-6">
+                    <h2 className="text-3xl font-bold text-[#2D4A2D]">
+                        {userRole === 'admin' ? 'Todas las reservas' : 'Mis reservas'}
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {reservations.length === 0 && (
+                            <p className="text-gray-500">No hay reservas</p>
+                        )}
+                        {reservations.map((reservation, index) => (
+                            <ReservationCard
+                                key={reservation.id}
+                                id={String(index + 1).padStart(4, '0')}
+                                roomNumber={reservation.roomNumber}
+                                startDate={reservation.startDate.slice(0, 10)}
+                                endDate={reservation.endDate.slice(0, 10)}
+                                status={reservation.status}
+                                totalPrice={reservation.totalPrice}
+                                onCancel={() => handleCancel(reservation.id)}
+                            />
+                        ))}
+                    </div>
+                    <button
+                        onClick={() => router.push('/rooms')}
+                        className="text-[#8B6914] hover:underline text-sm"
+                    >
+                        Ver habitaciones
+                    </button>
                 </div>
-                <button
-                    onClick={() => router.push('/rooms')}
-                    className="text-blue-600 hover:underline text-sm"
-                >
-                    Ver habitaciones
-                </button>
             </div>
-        </div>
+        </ProtectedRoute>
     );
 }

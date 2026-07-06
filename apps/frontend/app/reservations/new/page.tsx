@@ -49,16 +49,21 @@ function NewReservationContent() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-[#F5F0E8]">
             <Navbar userRole={userRole} onLogout={handleLogout} />
-            <div className="max-w-md mx-auto p-6 mt-10 bg-white rounded-lg shadow-md flex flex-col gap-4">
-                <h2 className="text-2xl font-bold">Confirmar reserva</h2>
+            <div className="max-w-md mx-auto p-6 mt-10 bg-white rounded-xl shadow-md flex flex-col gap-4 border border-[#C4A35A]/30">
+                <h2 className="text-2xl font-bold text-[#2D4A2D]">Confirmar reserva</h2>
                 <p className="text-gray-600">Habitación: {roomId}</p>
                 <p className="text-gray-600">Check-in: {startDate}</p>
                 <p className="text-gray-600">Check-out: {endDate}</p>
                 {error && <p className="text-red-500 text-sm">{error}</p>}
-                {success && <p className="text-green-500 text-sm">Reserva creada correctamente!</p>}
-                <Button label="Confirmar reserva" onClick={handleReserve} />
+                {success && <p className="text-green-600 text-sm">Reserva creada correctamente!</p>}
+                <button
+                    onClick={handleReserve}
+                    className="bg-[#2D4A2D] hover:bg-[#3D5A3D] text-white px-4 py-3 rounded-lg font-medium transition-colors w-full"
+                >
+                    Confirmar reserva
+                </button>
                 <Button label="Volver" variant="secondary" onClick={() => router.push('/rooms')} />
             </div>
         </div>
