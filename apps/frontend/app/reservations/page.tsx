@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ReservationCard } from '../../components/ReservationCard';
 import { Navbar } from '../../components/Navbar';
 import { ProtectedRoute } from '../../components/ProtectedRoute';
+import { TopoLines } from '../../components/TopoLines';
 import { useReservations } from '../../hooks/Usereservations';
 import { useReservationActions } from '../../hooks/Usereservationactions';
 import { ClipboardList, ArrowLeft, CalendarX } from 'lucide-react';
@@ -37,19 +38,18 @@ export default function ReservationsPage() {
 
     return (
         <ProtectedRoute>
-            <div className="min-h-screen bg-[#F5F0E8]">
+            <div className="min-h-screen bg-[#F5F0E8] paper-grain">
                 <Navbar userRole={userRole} onLogout={handleLogout} />
 
-                <div className="relative overflow-hidden bg-gradient-to-br from-[#2D4A2D] via-[#2D4A2D] to-[#1F361F] text-white py-14 px-6 text-center">
-                    <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-[#C4A35A]/10 blur-3xl" />
-                    <div className="absolute -bottom-20 -right-10 w-72 h-72 rounded-full bg-[#C4A35A]/10 blur-3xl" />
+                <div className="relative overflow-hidden bg-gradient-to-b from-[#16281A] via-[#1F3A1F] to-[#0F1F12] text-white py-14 px-6 text-center">
+                    <TopoLines />
 
                     <div className="relative flex flex-col items-center gap-2 animate-fade-in-up">
                         <span className="inline-flex items-center gap-2 text-[#C4A35A] text-xs font-semibold tracking-widest uppercase bg-white/5 border border-[#C4A35A]/30 px-4 py-1.5 rounded-full">
                             <ClipboardList size={14} />
                             {userRole === 'admin' ? 'Vista administrador' : 'Tu historial'}
                         </span>
-                        <h2 className="text-4xl font-bold">
+                        <h2 className="font-heading italic text-4xl font-medium">
                             {userRole === 'admin' ? 'Todas las reservas' : 'Mis reservas'}
                         </h2>
                         <p className="text-[#E8D9B5] text-lg">
@@ -70,13 +70,13 @@ export default function ReservationsPage() {
                         </div>
                     ) : reservations.length === 0 ? (
                         <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl p-12 text-center border border-dashed border-[#C4A35A]/30 shadow-sm animate-fade-in-scale flex flex-col items-center gap-4">
-                            <span className="bg-[#2D4A2D]/10 p-4 rounded-full">
-                                <CalendarX size={32} className="text-[#2D4A2D]" />
+                            <span className="bg-[#1F3A1F]/10 p-4 rounded-full">
+                                <CalendarX size={32} className="text-[#1F3A1F]" />
                             </span>
                             <p className="text-gray-500 text-lg">No tenés reservas todavía</p>
                             <button
                                 onClick={() => router.push('/rooms')}
-                                className="bg-[#2D4A2D] hover:bg-[#3D5A3D] active:scale-[0.98] text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-md shadow-[#2D4A2D]/20"
+                                className="btn-shine bg-[#1F3A1F] hover:bg-[#2D4A2D] active:scale-[0.98] text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-md shadow-[#1F3A1F]/20"
                             >
                                 Ver habitaciones
                             </button>
@@ -85,9 +85,9 @@ export default function ReservationsPage() {
                         <>
                             {active.length > 0 && (
                                 <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-sm border border-[#C4A35A]/20 p-6 flex flex-col gap-4 animate-fade-in-up">
-                                    <h3 className="text-[#2D4A2D] font-bold text-xl border-b border-[#C4A35A]/30 pb-2 flex items-center gap-2">
+                                    <h3 className="text-[#1F3A1F] font-heading italic text-xl border-b border-[#C4A35A]/30 pb-2 flex items-center gap-2">
                                         Reservas activas
-                                        <span className="text-xs bg-[#2D4A2D]/10 text-[#2D4A2D] px-2 py-0.5 rounded-full font-medium">
+                                        <span className="text-xs bg-[#1F3A1F]/10 text-[#1F3A1F] px-2 py-0.5 rounded-full font-medium not-italic font-body">
                                             {active.length}
                                         </span>
                                     </h3>
@@ -110,9 +110,9 @@ export default function ReservationsPage() {
 
                             {past.length > 0 && (
                                 <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-sm border border-[#C4A35A]/20 p-6 flex flex-col gap-4 animate-fade-in-up">
-                                    <h3 className="text-[#2D4A2D] font-bold text-xl border-b border-[#C4A35A]/30 pb-2 flex items-center gap-2">
+                                    <h3 className="text-[#1F3A1F] font-heading italic text-xl border-b border-[#C4A35A]/30 pb-2 flex items-center gap-2">
                                         Historial
-                                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">
+                                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium not-italic font-body">
                                             {past.length}
                                         </span>
                                     </h3>
@@ -137,7 +137,7 @@ export default function ReservationsPage() {
 
                     <button
                         onClick={() => router.push('/rooms')}
-                        className="group flex items-center justify-center gap-2 text-[#8B6914] hover:text-[#2D4A2D] text-sm font-medium transition-colors py-2"
+                        className="group flex items-center justify-center gap-2 text-[#8B6914] hover:text-[#1F3A1F] text-sm font-medium transition-colors py-2"
                     >
                         <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
                         Ver habitaciones

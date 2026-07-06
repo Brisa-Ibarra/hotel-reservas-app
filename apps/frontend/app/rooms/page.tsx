@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { RoomCard } from '../../components/RoomCard';
 import { Navbar } from '../../components/Navbar';
 import { ProtectedRoute } from '../../components/ProtectedRoute';
+import { TopoLines } from '../../components/TopoLines';
 import { useAvailableRooms } from '../../hooks/Useavailablerooms';
 import {
     Search,
@@ -50,19 +51,20 @@ export default function RoomsPage() {
 
     return (
         <ProtectedRoute>
-            <div className="min-h-screen bg-[#F5F0E8]">
+            <div className="min-h-screen bg-[#F5F0E8] paper-grain">
                 <Navbar userRole={userRole} onLogout={handleLogout} />
 
-                <div className="relative overflow-hidden bg-gradient-to-br from-[#2D4A2D] via-[#2D4A2D] to-[#1F361F] text-white py-16 px-6 text-center">
-                    <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-[#C4A35A]/10 blur-3xl" />
-                    <div className="absolute -bottom-20 -right-10 w-72 h-72 rounded-full bg-[#C4A35A]/10 blur-3xl" />
+                <div className="relative overflow-hidden bg-gradient-to-b from-[#16281A] via-[#1F3A1F] to-[#0F1F12] text-white py-16 px-6 text-center">
+                    <TopoLines />
 
                     <div className="relative flex flex-col items-center gap-3">
                         <span className="inline-flex items-center gap-2 text-[#C4A35A] text-xs font-semibold tracking-widest uppercase bg-white/5 border border-[#C4A35A]/30 px-4 py-1.5 rounded-full">
                             <BedDouble size={14} />
                             Alojamiento premium
                         </span>
-                        <h2 className="text-4xl md:text-5xl font-bold">Nuestras Habitaciones</h2>
+                        <h2 className="font-heading italic text-4xl md:text-5xl font-medium">
+                            Nuestras Habitaciones
+                        </h2>
                         <p className="text-[#E8D9B5] text-lg max-w-md">
                             Encontrá la habitación perfecta para tu estadía
                         </p>
@@ -71,14 +73,14 @@ export default function RoomsPage() {
 
                 <div className="max-w-5xl mx-auto p-6 flex flex-col gap-8 -mt-10">
                     <div className="relative bg-white/90 backdrop-blur-sm p-6 md:p-7 rounded-2xl shadow-xl shadow-black/5 border border-[#C4A35A]/20 flex flex-col gap-4">
-                        <h3 className="text-[#2D4A2D] font-bold flex items-center gap-2 text-base">
-                            <span className="bg-[#2D4A2D]/10 p-1.5 rounded-lg">
-                                <Calendar size={16} className="text-[#2D4A2D]" />
+                        <h3 className="text-[#1F3A1F] font-heading italic text-lg flex items-center gap-2">
+                            <span className="bg-[#1F3A1F]/10 p-1.5 rounded-lg">
+                                <Calendar size={16} className="text-[#1F3A1F]" />
                             </span>
                             Buscá por fechas
                         </h3>
                         <div className="flex gap-4 items-end flex-wrap">
-                            <div className="flex flex-col gap-1.5 flex-1 min-w-[160px]">
+                            <div className="flex flex-col gap-1.5 flex-1 min-w-[160px] input-underline">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                                     Check-in
                                 </label>
@@ -86,10 +88,10 @@ export default function RoomsPage() {
                                     type="date"
                                     value={startDate}
                                     onChange={(e) => setStartDate(e.target.value)}
-                                    className="px-4 py-2.5 border border-gray-200 rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#2D4A2D]/40 focus:border-[#2D4A2D] bg-[#FAF8F4]"
+                                    className="px-4 py-2.5 border border-gray-200 rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#1F3A1F]/40 focus:border-[#1F3A1F] bg-[#FAF8F4]"
                                 />
                             </div>
-                            <div className="flex flex-col gap-1.5 flex-1 min-w-[160px]">
+                            <div className="flex flex-col gap-1.5 flex-1 min-w-[160px] input-underline">
                                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                                     Check-out
                                 </label>
@@ -97,12 +99,12 @@ export default function RoomsPage() {
                                     type="date"
                                     value={endDate}
                                     onChange={(e) => setEndDate(e.target.value)}
-                                    className="px-4 py-2.5 border border-gray-200 rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#2D4A2D]/40 focus:border-[#2D4A2D] bg-[#FAF8F4]"
+                                    className="px-4 py-2.5 border border-gray-200 rounded-xl outline-none transition-all focus:ring-2 focus:ring-[#1F3A1F]/40 focus:border-[#1F3A1F] bg-[#FAF8F4]"
                                 />
                             </div>
                             <button
                                 onClick={handleSearch}
-                                className="bg-[#2D4A2D] hover:bg-[#3D5A3D] active:scale-[0.97] text-white px-6 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2 shadow-md shadow-[#2D4A2D]/20"
+                                className="btn-shine bg-[#1F3A1F] hover:bg-[#2D4A2D] active:scale-[0.97] text-white px-6 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2 shadow-md shadow-[#1F3A1F]/20"
                             >
                                 <Search size={16} />
                                 Buscar
@@ -162,17 +164,17 @@ export default function RoomsPage() {
 
                     <button
                         onClick={() => router.push('/reservations')}
-                        className="group relative flex items-center justify-between gap-4 bg-white hover:bg-[#2D4A2D] border border-[#C4A35A]/30 hover:border-[#2D4A2D] rounded-2xl p-5 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-[#2D4A2D]/20"
+                        className="group relative flex items-center justify-between gap-4 bg-white hover:bg-[#1F3A1F] border border-[#C4A35A]/30 hover:border-[#1F3A1F] rounded-2xl p-5 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-[#1F3A1F]/20"
                     >
                         <div className="flex items-center gap-4">
-                            <span className="bg-[#2D4A2D]/10 group-hover:bg-white/10 p-3 rounded-xl transition-colors">
+                            <span className="bg-[#1F3A1F]/10 group-hover:bg-white/10 p-3 rounded-xl transition-colors">
                                 <CalendarCheck
                                     size={22}
-                                    className="text-[#2D4A2D] group-hover:text-[#C4A35A] transition-colors"
+                                    className="text-[#1F3A1F] group-hover:text-[#C4A35A] transition-colors"
                                 />
                             </span>
                             <div className="text-left">
-                                <p className="font-bold text-[#2D4A2D] group-hover:text-white transition-colors">
+                                <p className="font-heading italic text-[#1F3A1F] group-hover:text-white transition-colors">
                                     Ver mis reservas
                                 </p>
                                 <p className="text-sm text-gray-500 group-hover:text-[#E8D9B5] transition-colors">

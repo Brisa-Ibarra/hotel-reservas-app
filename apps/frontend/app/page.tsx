@@ -1,10 +1,32 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Input } from '../components/Input';
 import { api } from '../services/api';
-import { Mountain, Sparkles, ArrowRight, Loader2 } from 'lucide-react';
+import { Mountain, ArrowRight, Loader2 } from 'lucide-react';
+
+const TAGLINES = [
+    'Rodeado de las majestuosas montañas de Mendoza',
+    'A 130 km de la ciudad, en el corazón de los Andes',
+    'Donde el silencio de la cordillera es el mejor lujo',
+];
+
+function TopoLines() {
+    return (
+        <svg className="topo-lines" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+                <path
+                    key={i}
+                    d={`M -50 ${120 + i * 90} Q 200 ${60 + i * 90} 400 ${140 + i * 90} T 850 ${100 + i * 90}`}
+                    fill="none"
+                    stroke="#C4A35A"
+                    strokeWidth="1.2"
+                />
+            ))}
+        </svg>
+    );
+}
 
 export default function LoginPage() {
     const [isRegister, setIsRegister] = useState(false);
@@ -13,6 +35,14 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [taglineIdx, setTaglineIdx] = useState(0);
+
+    useEffect(() => {
+        const id = setInterval(() => {
+            setTaglineIdx((prev) => (prev + 1) % TAGLINES.length);
+        }, 4500);
+        return () => clearInterval(id);
+    }, []);
 
     const handleSubmit = async () => {
         setError('');
@@ -41,67 +71,75 @@ export default function LoginPage() {
         setLoading(false);
     };
 
-    const toggleMode = () => {
-        setError('');
-        setIsRegister((prev) => !prev);
-    };
-
     return (
         <div className="min-h-screen flex">
             {/* Panel izquierdo */}
-            <div className="hidden md:flex relative w-1/2 items-center justify-center flex-col gap-4 p-12 overflow-hidden bg-gradient-to-br from-[#2D4A2D] via-[#2D4A2D] to-[#1F361F]">
-                {/* Blobs decorativos */}
-                <div className="absolute -top-24 -left-20 w-80 h-80 rounded-full bg-[#C4A35A]/10 blur-3xl animate-float" />
-                <div
-                    className="absolute -bottom-28 -right-16 w-96 h-96 rounded-full bg-[#C4A35A]/10 blur-3xl animate-float"
-                    style={{ animationDelay: '1.5s' }}
-                />
+            <div className="hidden md:flex relative w-1/2 items-center justify-center flex-col gap-6 p-12 overflow-hidden bg-gradient-to-b from-[#16281A] via-[#1F3A1F] to-[#0F1F12]">
+                <TopoLines />
 
-                <div className="relative flex flex-col items-center gap-4 animate-fade-in-up">
-                    <span className="inline-flex items-center gap-2 text-[#C4A35A] text-xs font-semibold tracking-widest uppercase bg-white/5 border border-[#C4A35A]/30 px-4 py-1.5 rounded-full">
-                        <Sparkles size={14} />
-                        Bienvenido
-                    </span>
-
+                <div className="relative flex flex-col items-center gap-5 animate-fade-in-up text-center">
                     <Image
                         src="/logo.png"
                         alt="Gran Hotel Uspallata"
-                        width={180}
-                        height={157}
+                        width={140}
+                        height={122}
                         className="drop-shadow-lg"
                     />
 
-                    <h1 className="text-4xl font-bold text-white text-center">
-                        Gran Hotel Uspallata
+                    <div className="w-10 h-px bg-[#C4A35A]/60" />
+
+                    <h1 className="font-heading text-5xl font-medium italic text-white leading-tight">
+                        Gran Hotel<br />Uspallata
                     </h1>
-                    <p className="text-[#C4A35A] text-center text-lg tracking-widest uppercase">
+
+                    <p className="text-[#C4A35A] text-xs tracking-[0.25em] uppercase">
                         Un auténtico hotel de montaña
                     </p>
-                    <p className="text-white/60 text-center mt-2 text-sm max-w-sm">
-                        Rodeado de las majestuosas montañas de Mendoza, te esperamos para una
-                        experiencia única.
+
+                    <p
+                        key={taglineIdx}
+                        className="text-white/50 text-sm max-w-xs mt-3 animate-fade-in-up italic font-heading"
+                    >
+                        {TAGLINES[taglineIdx]}
                     </p>
 
-                    <div className="flex items-center gap-2 text-white/40 text-xs mt-4">
-                        <Mountain size={14} />
-                        <span>Mendoza, Argentina</span>
+                    <div className="flex items-center gap-2 text-white/35 text-xs mt-6">
+                        <Mountain size={13} />
+                        <span className="tracking-wide">Mendoza, Argentina</span>
                     </div>
                 </div>
             </div>
 
             {/* Panel derecho */}
-            <div className="w-full md:w-1/2 bg-[#F5F0E8] flex items-center justify-center p-8 relative overflow-hidden">
-                <div className="md:hidden absolute -top-20 -right-20 w-64 h-64 rounded-full bg-[#2D4A2D]/5 blur-3xl" />
-
-                <div className="relative bg-white p-8 rounded-2xl shadow-xl shadow-black/5 border border-[#C4A35A]/10 w-full max-w-md flex flex-col gap-5 animate-fade-in-scale">
-                    {/* Logo mobile */}
+            <div className="w-full md:w-1/2 bg-[#F5F0E8] paper-grain flex items-center justify-center p-8 relative">
+                <div className="relative bg-white p-8 rounded-2xl shadow-xl shadow-black/5 border border-[#C4A35A]/15 w-full max-w-md flex flex-col gap-5 animate-fade-in-scale">
                     <div className="md:hidden flex justify-center mb-1">
                         <Image src="/logo.png" alt="Gran Hotel Uspallata" width={64} height={56} />
                     </div>
 
-                    <div className="text-center">
-                        <h2 className="text-2xl font-bold text-[#2D4A2D]">
-                            {isRegister ? 'Crear cuenta' : 'Bienvenido'}
+                    {/* Toggle tipo tab */}
+                    <div className="flex bg-[#F5F0E8] rounded-xl p-1 gap-1">
+                        <button
+                            onClick={() => { setError(''); setIsRegister(false); }}
+                            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                                !isRegister ? 'bg-white text-[#1F3A1F] shadow-sm' : 'text-gray-500'
+                            }`}
+                        >
+                            Iniciar sesión
+                        </button>
+                        <button
+                            onClick={() => { setError(''); setIsRegister(true); }}
+                            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                                isRegister ? 'bg-white text-[#1F3A1F] shadow-sm' : 'text-gray-500'
+                            }`}
+                        >
+                            Crear cuenta
+                        </button>
+                    </div>
+
+                    <div className="text-left">
+                        <h2 className="font-heading text-2xl italic text-[#1F3A1F]">
+                            {isRegister ? 'Creá tu cuenta' : 'Bienvenido de nuevo'}
                         </h2>
                         <p className="text-gray-500 text-sm mt-1">
                             {isRegister
@@ -112,7 +150,7 @@ export default function LoginPage() {
 
                     <div className="flex flex-col gap-4">
                         {isRegister && (
-                            <div className="animate-fade-in-up">
+                            <div className="animate-fade-in-up input-underline">
                                 <Input
                                     label="Nombre"
                                     value={nombre}
@@ -121,20 +159,24 @@ export default function LoginPage() {
                                 />
                             </div>
                         )}
-                        <Input
-                            label="Email"
-                            type="email"
-                            value={email}
-                            onChange={setEmail}
-                            placeholder="tu@email.com"
-                        />
-                        <Input
-                            label="Contraseña"
-                            type="password"
-                            value={password}
-                            onChange={setPassword}
-                            placeholder="••••••••"
-                        />
+                        <div className="input-underline">
+                            <Input
+                                label="Email"
+                                type="email"
+                                value={email}
+                                onChange={setEmail}
+                                placeholder="tu@email.com"
+                            />
+                        </div>
+                        <div className="input-underline">
+                            <Input
+                                label="Contraseña"
+                                type="password"
+                                value={password}
+                                onChange={setPassword}
+                                placeholder="••••••••"
+                            />
+                        </div>
                     </div>
 
                     {error && (
@@ -146,7 +188,7 @@ export default function LoginPage() {
                     <button
                         onClick={handleSubmit}
                         disabled={loading}
-                        className="group bg-[#2D4A2D] hover:bg-[#3D5A3D] active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 text-white px-4 py-3 rounded-xl font-medium w-full flex items-center justify-center gap-2 shadow-md shadow-[#2D4A2D]/20 transition-all"
+                        className="btn-shine group bg-[#1F3A1F] hover:bg-[#2D4A2D] active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 text-white px-4 py-3 rounded-xl font-medium w-full flex items-center justify-center gap-2 shadow-md shadow-[#1F3A1F]/20 transition-all"
                     >
                         {loading ? (
                             <Loader2 size={18} className="animate-spin" />
@@ -159,15 +201,6 @@ export default function LoginPage() {
                                 />
                             </>
                         )}
-                    </button>
-
-                    <button
-                        onClick={toggleMode}
-                        className="text-sm text-[#8B6914] hover:text-[#2D4A2D] hover:underline text-center transition-colors"
-                    >
-                        {isRegister
-                            ? '¿Ya tenés cuenta? Iniciá sesión'
-                            : '¿No tenés cuenta? Registrate'}
                     </button>
                 </div>
             </div>
