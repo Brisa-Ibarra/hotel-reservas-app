@@ -2,12 +2,215 @@
 
 :root {
   --color-primary: #2D4A2D;
+  --color-primary-light: #3D5A3D;
   --color-secondary: #8B6914;
   --color-accent: #C4A35A;
   --color-bg: #F5F0E8;
+  --color-bg-soft: #FAF8F4;
+
+  /* --font-heading y --font-body ya vienen definidas por next/font en layout.tsx
+     (Poppins e Inter). Si por algún motivo no cargan, caen a estas sans-serif del sistema. */
+  --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* {
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: Georgia, 'Times New Roman', serif;
-  background-color: #F5F0E8;
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Títulos con sans-serif moderna y con carácter (Poppins) */
+h1,
+h2,
+h3,
+h4,
+.font-heading {
+  font-family: var(--font-heading);
+  letter-spacing: -0.01em;
+}
+
+/* Cuerpo, botones, labels, inputs: sans-serif moderna y más legible en pantalla */
+p,
+span,
+button,
+input,
+label,
+.font-body {
+  font-family: var(--font-body);
+}
+
+/* Transición suave por defecto en elementos interactivos,
+   sin pisar transiciones más específicas que ya tengan (hover:scale, etc.) */
+a,
+button {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Selección de texto con la paleta del hotel en vez del azul por defecto */
+::selection {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+/* Foco accesible pero prolijo, en vez del outline azul del navegador */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Scrollbar personalizada (Chrome/Edge/Brave) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 999px;
+  border: 2px solid var(--color-bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}
+
+/* Scrollbar personalizada (Firefox) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) var(--color-bg);
+}
+
+/* ---------- Animaciones reutilizables ---------- */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+@keyframes floatSlow {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulseSoft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* ---------- Clases utilitarias ---------- */
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.45s ease-out both;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.35s ease-out both;
+}
+
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 2s ease-in-out infinite;
+}
+
+/* Skeleton loading con efecto shimmer, en vez del pulse plano de Tailwind */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(196, 163, 90, 0.08) 0%,
+    rgba(196, 163, 90, 0.2) 50%,
+    rgba(196, 163, 90, 0.08) 100%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+/* Efecto "vidrio" reutilizable para cards flotantes sobre el hero */
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Utilidad para escalonar animaciones de listas sin tocar el JSX de cada item */
+.stagger-children > * {
+  animation: fadeInUp 0.45s ease-out both;
+}
+.stagger-children > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+.stagger-children > *:nth-child(2) {
+  animation-delay: 70ms;
+}
+.stagger-children > *:nth-child(3) {
+  animation-delay: 140ms;
+}
+.stagger-children > *:nth-child(4) {
+  animation-delay: 210ms;
+}
+.stagger-children > *:nth-child(5) {
+  animation-delay: 280ms;
+}
+.stagger-children > *:nth-child(6) {
+  animation-delay: 350ms;
 }

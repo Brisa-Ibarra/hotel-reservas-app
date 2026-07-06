@@ -1,50 +1,30 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ReservationCard } from '../../components/ReservationCard';
 import { Navbar } from '../../components/Navbar';
-import { api } from '../../services/api';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
-
-interface Reservation {
-    id: string;
-    userId: string;
-    roomId: string;
-    roomNumber: string;
-    startDate: string;
-    endDate: string;
-    status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
-    totalPrice: number;
-}
+import { ProtectedRoute } from '../../components/ProtectedRoute';
+import { useReservations } from '../../hooks/Usereservations';
+import { useReservationActions } from '../../hooks/Usereservationactions';
+import { ClipboardList, ArrowLeft, CalendarX } from 'lucide-react';
 
 export default function ReservationsPage() {
     const router = useRouter();
-    const [reservations, setReservations] = useState<Reservation[]>([]);
     const [userRole, setUserRole] = useState<'admin' | 'guest'>('guest');
     const [userId, setUserId] = useState('');
 
-    const fetchReservations = useCallback(async (id: string, role: string) => {
-        if (role === 'admin') {
-            const result = await api.get('/reservations?userRole=admin');
-            if (!result.error) setReservations(result);
-        } else {
-            const result = await api.get(`/reservations/my/${id}`);
-            if (!result.error) setReservations(result);
-        }
+    useEffect(() => {
+        setUserRole((localStorage.getItem('role') as 'admin' | 'guest') ?? 'guest');
+        setUserId(localStorage.getItem('userId') ?? '');
     }, []);
 
-    useEffect(() => {
-        const role = localStorage.getItem('role') as 'admin' | 'guest';
-        const id = localStorage.getItem('userId') ?? '';
-        setUserRole(role ?? 'guest');
-        setUserId(id);
-        fetchReservations(id, role ?? 'guest');
-    }, [fetchReservations]);
+    const { reservations, loading, refetch } = useReservations(userId, userRole);
+    const { cancelReservation } = useReservationActions(userRole);
 
     const handleCancel = async (reservationId: string) => {
-        await api.put(`/reservations/${reservationId}/cancel`, { userId });
-        fetchReservations(userId, userRole);
+        const success = await cancelReservation(reservationId, userId);
+        if (success) refetch();
     };
 
     const handleLogout = () => {
@@ -52,35 +32,114 @@ export default function ReservationsPage() {
         router.push('/');
     };
 
+    const active = reservations.filter((r) => r.status === 'pending' || r.status === 'confirmed');
+    const past = reservations.filter((r) => r.status === 'cancelled' || r.status === 'completed');
+
     return (
         <ProtectedRoute>
             <div className="min-h-screen bg-[#F5F0E8]">
                 <Navbar userRole={userRole} onLogout={handleLogout} />
-                <div className="max-w-5xl mx-auto p-6 flex flex-col gap-6">
-                    <h2 className="text-3xl font-bold text-[#2D4A2D]">
-                        {userRole === 'admin' ? 'Todas las reservas' : 'Mis reservas'}
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {reservations.length === 0 && (
-                            <p className="text-gray-500">No hay reservas</p>
-                        )}
-                        {reservations.map((reservation, index) => (
-                            <ReservationCard
-                                key={reservation.id}
-                                id={String(index + 1).padStart(4, '0')}
-                                roomNumber={reservation.roomNumber}
-                                startDate={reservation.startDate.slice(0, 10)}
-                                endDate={reservation.endDate.slice(0, 10)}
-                                status={reservation.status}
-                                totalPrice={reservation.totalPrice}
-                                onCancel={() => handleCancel(reservation.id)}
-                            />
-                        ))}
+
+                <div className="relative overflow-hidden bg-gradient-to-br from-[#2D4A2D] via-[#2D4A2D] to-[#1F361F] text-white py-14 px-6 text-center">
+                    <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-[#C4A35A]/10 blur-3xl" />
+                    <div className="absolute -bottom-20 -right-10 w-72 h-72 rounded-full bg-[#C4A35A]/10 blur-3xl" />
+
+                    <div className="relative flex flex-col items-center gap-2 animate-fade-in-up">
+                        <span className="inline-flex items-center gap-2 text-[#C4A35A] text-xs font-semibold tracking-widest uppercase bg-white/5 border border-[#C4A35A]/30 px-4 py-1.5 rounded-full">
+                            <ClipboardList size={14} />
+                            {userRole === 'admin' ? 'Vista administrador' : 'Tu historial'}
+                        </span>
+                        <h2 className="text-4xl font-bold">
+                            {userRole === 'admin' ? 'Todas las reservas' : 'Mis reservas'}
+                        </h2>
+                        <p className="text-[#E8D9B5] text-lg">
+                            {reservations.length} reserva(s) en total
+                        </p>
                     </div>
+                </div>
+
+                <div className="max-w-5xl mx-auto p-6 flex flex-col gap-6 -mt-10">
+                    {loading ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {[...Array(3)].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="h-44 rounded-2xl border border-[#C4A35A]/10 skeleton-shimmer"
+                                />
+                            ))}
+                        </div>
+                    ) : reservations.length === 0 ? (
+                        <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl p-12 text-center border border-dashed border-[#C4A35A]/30 shadow-sm animate-fade-in-scale flex flex-col items-center gap-4">
+                            <span className="bg-[#2D4A2D]/10 p-4 rounded-full">
+                                <CalendarX size={32} className="text-[#2D4A2D]" />
+                            </span>
+                            <p className="text-gray-500 text-lg">No tenés reservas todavía</p>
+                            <button
+                                onClick={() => router.push('/rooms')}
+                                className="bg-[#2D4A2D] hover:bg-[#3D5A3D] active:scale-[0.98] text-white px-6 py-2.5 rounded-xl font-medium transition-all shadow-md shadow-[#2D4A2D]/20"
+                            >
+                                Ver habitaciones
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                            {active.length > 0 && (
+                                <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-sm border border-[#C4A35A]/20 p-6 flex flex-col gap-4 animate-fade-in-up">
+                                    <h3 className="text-[#2D4A2D] font-bold text-xl border-b border-[#C4A35A]/30 pb-2 flex items-center gap-2">
+                                        Reservas activas
+                                        <span className="text-xs bg-[#2D4A2D]/10 text-[#2D4A2D] px-2 py-0.5 rounded-full font-medium">
+                                            {active.length}
+                                        </span>
+                                    </h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
+                                        {active.map((reservation, index) => (
+                                            <ReservationCard
+                                                key={reservation.id}
+                                                id={String(index + 1).padStart(4, '0')}
+                                                roomNumber={reservation.roomNumber}
+                                                startDate={reservation.startDate.slice(0, 10)}
+                                                endDate={reservation.endDate.slice(0, 10)}
+                                                status={reservation.status}
+                                                totalPrice={reservation.totalPrice}
+                                                onCancel={() => handleCancel(reservation.id)}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {past.length > 0 && (
+                                <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-sm border border-[#C4A35A]/20 p-6 flex flex-col gap-4 animate-fade-in-up">
+                                    <h3 className="text-[#2D4A2D] font-bold text-xl border-b border-[#C4A35A]/30 pb-2 flex items-center gap-2">
+                                        Historial
+                                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">
+                                            {past.length}
+                                        </span>
+                                    </h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
+                                        {past.map((reservation, index) => (
+                                            <ReservationCard
+                                                key={reservation.id}
+                                                id={String(active.length + index + 1).padStart(4, '0')}
+                                                roomNumber={reservation.roomNumber}
+                                                startDate={reservation.startDate.slice(0, 10)}
+                                                endDate={reservation.endDate.slice(0, 10)}
+                                                status={reservation.status}
+                                                totalPrice={reservation.totalPrice}
+                                                onCancel={() => handleCancel(reservation.id)}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    )}
+
                     <button
                         onClick={() => router.push('/rooms')}
-                        className="text-[#8B6914] hover:underline text-sm"
+                        className="group flex items-center justify-center gap-2 text-[#8B6914] hover:text-[#2D4A2D] text-sm font-medium transition-colors py-2"
                     >
+                        <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
                         Ver habitaciones
                     </button>
                 </div>
