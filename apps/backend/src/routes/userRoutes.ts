@@ -8,28 +8,28 @@ const userRepo = new UserRepo();
 const registerUser = new RegisterUser(userRepo);
 const loginUser = new LoginUser(userRepo);
 
-router.post('/register', async (req:Request, res: Response)=> {
+router.post('/register', async (req: Request, res: Response) => {
     try {
-        const {nombre, email, password} = req.body;
-        const user = await registerUser.execute({nombre, email, password});
-        res.status(201).json({id: user.id, nombre: user.nombre, email: user.email, role: user.role})
+        const { nombre, email, password } = req.body;
+        const user = await registerUser.execute({ nombre, email, password });
+        res.status(201).json({ id: user.id, nombre: user.nombre, email: user.email, role: user.role });
     } catch (error: any) {
-        res.status(400).json({error: error.message})
+        res.status(400).json({ error: error.message });
     }
 });
 
-router.post('/login', async(req: Request, res: Response)=> {
+router.post('/login', async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
-        const result = await loginUser.execute({email, password});
-        res.status(201).json({ 
-            token: result.token, 
+        const result = await loginUser.execute({ email, password });
+        res.status(200).json({ 
+            token: result.token,
             role: result.user.role,
             userId: result.user.id
         });
-    } catch (error: any){
-        res.status(400).json({error: error.message})
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
     }
-})
+});
 
 export default router;

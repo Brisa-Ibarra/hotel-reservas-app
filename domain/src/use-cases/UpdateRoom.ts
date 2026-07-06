@@ -1,18 +1,20 @@
 import { UserRole } from "../entities/User";
+import { Room, RoomType, RoomStatus } from "../entities/Room";
 import { RoomRepository } from "../repositories/RoomRepository";
-import { Room } from "../entities/Room";
 
 interface UpdateRoomInput {
     userRole: UserRole;
     id: string;
     number: string;
-    type: 'single' | 'double' | 'suite';
+    type: RoomType;
     price: number;
     description: string;
+    status: RoomStatus;
 }
 
 export class UpdateRoom {
     constructor(private roomRepository: RoomRepository) {}
+
     async execute(data: UpdateRoomInput): Promise<Room> {
         if (data.userRole !== 'admin') {
             throw new Error('No tenes permisos para esta accion');
@@ -27,9 +29,9 @@ export class UpdateRoom {
             type: data.type,
             price: data.price,
             description: data.description,
-            status: room.status,
+            status: data.status, 
         });
         await this.roomRepository.save(updatedRoom);
         return updatedRoom;
     }
-}      
+}
