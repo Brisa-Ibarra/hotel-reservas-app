@@ -1,5 +1,7 @@
 import { User } from "../entities/User";
 import { UserRepository } from "../repositories/UserRepository";
+import bcrypt from 'bcrypt';
+
 
 export interface RegisterUserInput {
     nombre: string;
@@ -21,7 +23,8 @@ export class RegisterUser {
         throw new Error("El email ya está registrado");
     }
 
-    const passwordHash = `hashed_${input.password}`;
+    const passwordHash = await bcrypt.hash(input.password, 10);
+
 
     const user = new User({
         id: generateId(),
