@@ -1,8 +1,8 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 function getToken(): string | null {
     if (typeof window === 'undefined') return null;
-    return localStorage.getItem('token'); 
+    return localStorage.getItem('token');
 }
 
 function authHeaders(): Record<string, string> {
@@ -60,3 +60,5 @@ export const api = {
         }
     },
 };
+
+export type ApiClient = typeof api;
